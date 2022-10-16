@@ -7,7 +7,8 @@ ws = wb['Sheet1']
 
 row_id = 1;
 number = 0;
-score = []
+score = {} 
+score_list = []
 for row in ws:
 	if row_id != 1:
 		sum_v = ws.cell(row = row_id, column = 3).value * 0.3
@@ -15,39 +16,39 @@ for row in ws:
 		sum_v += ws.cell(row = row_id, column = 5).value * 0.34
 		sum_v += ws.cell(row = row_id, column = 6).value
 		ws.cell(row = row_id, column = 7).value = sum_v
-		score.append(ws.cell(row = row_id, column = 7).value)
+		s = str(sum_v)
+		if s not in score:
+			score[s] = 1
+			score_list.append(s)
+		else:
+			score[s] += 1
 		number += 1
 	row_id += 1
 
-dict = {string : 0 for string in score}
-score.sort()
-score.reverse()
-grade = [number*0.15, number*0.3, number*0.5, number*0.7, number*0.85]
+sorted_score = sorted(score.items(), key = lambda item: item[0], reverse = True)
+dictionary = dict(sorted_score)
+score_list.sort(reverse = True)
+grade = [int(number*0.15), int(number*0.3), int(number*0.5), int(number*0.7), int(number*0.85)]
 
-count = 1;
-for i in range(number):
-	if i+1 != number:
-		if score[i] != score[i+1]:
-			dict[score[i]] = count
-	elif i+1 == number:
-		dict[score[i]] = count
-	count += 1
-
-row_id = 1
-for row in ws:
-	if row_id != 1:
-		if dict[ws.cell(row = row_id, column = 7).value] <= grade[0]:
-			ws.cell(row = row_id, column = 8).value = "A+"
-		elif dict[ws.cell(row = row_id, column = 7).value] <= grade[1]:
-			ws.cell(row = row_id, column = 8).value = "A0"
-		elif dict[ws.cell(row = row_id, column = 7).value] <= grade[2]:
-			ws.cell(row = row_id, column = 8).value = "B+"
-		elif dict[ws.cell(row = row_id, column = 7).value] <= grade[3]:
-			ws.cell(row = row_id, column = 8).value = "B0"
-		elif dict[ws.cell(row = row_id, column = 7).value] <= grade[4]:
-			ws.cell(row = row_id, column = 8).value = "C+"
-		else:
-			ws.cell(row = row_id, column = 8).value = "C0"
-	row_id += 1
+count = 0
+for i in range(len(score_list)):
+	row_id = 1
+	score = float(score_list[i])
+	count += int(dictionary[score_list[i]])
+	for row in ws:
+		if ws.cell(row = row_id, column = 7).value == score:
+			if count <= grade[0]:
+				ws.cell(row = row_id, column = 8).value = "A+"
+			elif count <= grade[1]:
+				ws.cell(row = row_id, column = 8).value = "A0"
+			elif count <= grade[2]:
+				ws.cell(row = row_id, column = 8).value = "B+"
+			elif count <= grade[3]:
+				ws.cell(row = row_id, column = 8).value = "B0"
+			elif count <= grade[4]:
+				ws.cell(row = row_id, column = 8).value = "C+"
+			else:
+				ws.cell(row = row_id, column = 8).value = "C0"
+		row_id += 1
 
 wb.save( "student.xlsx" )
