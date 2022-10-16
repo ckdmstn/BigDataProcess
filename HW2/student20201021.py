@@ -8,7 +8,6 @@ ws = wb['Sheet1']
 row_id = 1;
 number = 0;
 score = {} 
-score_list = []
 for row in ws:
 	if row_id != 1:
 		sum_v = ws.cell(row = row_id, column = 3).value * 0.3
@@ -16,18 +15,16 @@ for row in ws:
 		sum_v += ws.cell(row = row_id, column = 5).value * 0.34
 		sum_v += ws.cell(row = row_id, column = 6).value
 		ws.cell(row = row_id, column = 7).value = sum_v
-		s = str(sum_v)
-		if s not in score:
-			score[s] = 1
-			score_list.append(s)
+		if sum_v not in score:
+			score[sum_v] = 1
 		else:
-			score[s] += 1
+			score[sum_v] += 1
 		number += 1
 	row_id += 1
 
 sorted_score = sorted(score.items(), key = lambda item: item[0], reverse = True)
 dictionary = dict(sorted_score)
-score_list.sort(reverse = True)
+score_list = list(dictionary.keys())
 grade = [int(number*0.15), int(number*0.3), int(number*0.5), int(number*0.7), int(number*0.85)]
 
 count = 0
