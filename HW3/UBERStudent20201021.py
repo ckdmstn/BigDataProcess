@@ -20,8 +20,5 @@ with open(filename, "rt") as fp:
 		strList.append(str)
 
 with open(outputFilename, "wt") as fp:
-	if strList:
-		fp.write(strList[0])
 	for line in strList:
-		if (line != strList[0]):
-			fp.write("\n"+line)
+		fp.write(line+"\n")
